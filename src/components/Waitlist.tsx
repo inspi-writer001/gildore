@@ -8,6 +8,7 @@ const Waitlist = () => {
     e.preventDefault();
     if (!email) return;
 
+    // /api/signup
     // Replace with your Supabase or API endpoint
     const response = await fetch("/api/signup", {
       method: "POST",
