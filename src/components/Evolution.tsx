@@ -10,10 +10,10 @@ import gildore_stage_icon_3 from "../assets/landing/icons/gildore_stage_icon_3.s
 
 const Evolution = () => {
   return (
-    <div className="flex flex-col w-full  relative h-[100vh] justify-center justify-self-center">
+    <div className="flex flex-col w-full relative md:min-h-[100vh] justify-center justify-self-center">
       <img src={grid} className="absolute z-10 w-full" />
-      <div className="__padded_container p-12 flex flex-col w-full h-full gap-8">
-        <div className="__evolution flex flex-row justify-between">
+      <div className="__padded_container p-12 flex flex-col w-full h-full gap-8 mb-10">
+        <div className="__evolution flex flex-col md:flex-row justify-between">
           <div className="__header_text anton text-4xl text-left uppercase w-70 ">
             The Evolution of Money
           </div>
@@ -28,10 +28,10 @@ const Evolution = () => {
             return (
               <div className="__evolution_stages flex flex-col h-[470px] md:w-[32%] w-full bg-[#171717] p-8">
                 <div className="__button mt-8">
-                  <div className="__cta_button z-20 relative h-7 anton text-sm py-1 rounded-sm w-28 text-[#D48900] uppercase font-bold border-b-2 border-[#FAC35D]">
+                  <div className=" z-20 relative h-7 anton text-sm py-1 rounded-sm w-28 uppercase font-bold border-b-2 border-[#BCBBBB] text-[#848484] __cta_button_silver">
                     {item.type}
                   </div>
-                  <div className="anton relative z-10 h-7 -mt-6 rounded-sm w-28 text-[#C78406] bg-[#C78406] uppercase"></div>
+                  <div className="anton relative z-10 h-7 -mt-6 rounded-sm w-28 text-[#6F6E6E] bg-[#6F6E6E] uppercase"></div>
                 </div>
                 <div className="__header anton text-2xl text-left uppercase mt-1">
                   {item.header}
@@ -63,27 +63,27 @@ const Evolution = () => {
                 superior savings instrument.
               </div>
               <div className="__gildore_ev w-full flex flex-col gap-4">
-                <div className="__1 flex flex-row bg-[#141414] justify-evenly p-2">
-                  <div>
-                    <img src={gildore_stage_icon_1} />
+                <div className="__1 flex flex-row bg-[#141414] p-2 items-center">
+                  <div className="flex mx-2">
+                    <img src={gildore_stage_icon_1} className="w-7 h-7" />
                   </div>
                   <div className="text-sm">
                     Each token is backed 1:1 by real physical gold or silver
                     stored in secure vaults
                   </div>
                 </div>
-                <div className="__2 flex flex-row bg-[#141414] justify-evenly p-2">
-                  <div>
-                    <img src={gildore_stage_icon_2} />
+                <div className="__2 flex flex-row bg-[#141414] p-2 items-center">
+                  <div className="flex mx-2">
+                    <img src={gildore_stage_icon_2} className="w-7 h-7" />
                   </div>
                   <div className="text-sm">
                     Easily convert between digital tokens and physical metals,
                     with options to withdraw your physical assets
                   </div>
                 </div>
-                <div className="__3 flex flex-row bg-[#141414] justify-evenly p-2">
-                  <div>
-                    <img src={gildore_stage_icon_3} />
+                <div className="__3 flex flex-row bg-[#141414] p-2 items-center">
+                  <div className="flex mx-2">
+                    <img src={gildore_stage_icon_3} className="w-7 h-7" />
                   </div>
                   <div className="text-sm">
                     Built on Solana's ultra-fast and low-cost blockchain for
