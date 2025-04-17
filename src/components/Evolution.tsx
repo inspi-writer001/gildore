@@ -10,14 +10,17 @@ import gildore_stage_icon_3 from "../assets/landing/icons/gildore_stage_icon_3.s
 
 const Evolution = () => {
   return (
-    <div className="flex flex-col w-full relative md:min-h-[100vh] justify-center justify-self-center">
+    <div
+      id="evolution"
+      className="flex flex-col w-full relative md:min-h-[100vh] justify-center justify-self-center"
+    >
       <img src={grid} className="absolute z-10 w-full" />
-      <div className="__padded_container p-12 flex flex-col w-full h-full gap-8 mb-10">
-        <div className="__evolution flex flex-col md:flex-row justify-between">
+      <div className="__padded_container md:p-12 p-5 flex flex-col w-full h-full gap-8 mb-10">
+        <div className="__evolution flex flex-col md:flex-row justify-between gap-2">
           <div className="__header_text anton text-4xl text-left uppercase w-70 ">
             The Evolution of Money
           </div>
-          <div className="__backstory w-96 text-left">
+          <div className="__backstory md:w-96 text-left md:text-base text-sm">
             From ancient bartering to digital assets, money has continuously
             evolved. Gildore combines the best of traditional and modern value
             systems.
@@ -50,10 +53,10 @@ const Evolution = () => {
         </div>
         <div className="__next bg-[#171717] p-8 relative z-20">
           <div className="__next_flex flex flex-col md:flex-row md:mt-15">
-            <div className="__image_container md:w-[50%] md:p-10">
+            <div className="__image_container md:w-[50%] md:p-10 flex justify-center">
               <img src={next} className="md:w-full w-64" />
             </div>
-            <div className="__the_evolution flex flex-col md:w-[50%] text-left gap-4">
+            <div className="__the_evolution flex flex-col md:mt-0 mt-10 md:w-[50%] text-left gap-4">
               <div className="__title anton text-3xl uppercase ">
                 The Next Evolution: Gildore
               </div>
@@ -65,7 +68,7 @@ const Evolution = () => {
               <div className="__gildore_ev w-full flex flex-col gap-4">
                 <div className="__1 flex flex-row bg-[#141414] p-2 items-center">
                   <div className="flex mx-2">
-                    <img src={gildore_stage_icon_1} className="w-7 h-7" />
+                    <img src={gildore_stage_icon_1} className="md:w-7 w-12" />
                   </div>
                   <div className="text-sm">
                     Each token is backed 1:1 by real physical gold or silver
@@ -74,7 +77,7 @@ const Evolution = () => {
                 </div>
                 <div className="__2 flex flex-row bg-[#141414] p-2 items-center">
                   <div className="flex mx-2">
-                    <img src={gildore_stage_icon_2} className="w-7 h-7" />
+                    <img src={gildore_stage_icon_2} className="md:w-7 w-12" />
                   </div>
                   <div className="text-sm">
                     Easily convert between digital tokens and physical metals,
@@ -83,7 +86,7 @@ const Evolution = () => {
                 </div>
                 <div className="__3 flex flex-row bg-[#141414] p-2 items-center">
                   <div className="flex mx-2">
-                    <img src={gildore_stage_icon_3} className="w-7 h-7" />
+                    <img src={gildore_stage_icon_3} className="md:w-7 w-12" />
                   </div>
                   <div className="text-sm">
                     Built on Solana's ultra-fast and low-cost blockchain for

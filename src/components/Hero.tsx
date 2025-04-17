@@ -3,24 +3,34 @@ import "../styles/button.css";
 import gold from "../assets/landing/gildore_gold.png";
 import silver from "../assets/landing/gildore_silver.png";
 import grid from "../assets/grid.svg";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const Hero = () => {
   return (
-    <div className="flex flex-col w-full p-4 relative h-[100vh] justify-center justify-self-center">
+    <div
+      id="about-us"
+      className="flex flex-col w-full p-4 relative h-[100vh] justify-center justify-self-center"
+    >
       <div className="gildore_hero flex flex-col w-full h-full relative justify-center items-center">
         <div className="p_outer absolute z-10">
           <div className="p_inner"></div>
         </div>
 
-        <img src={gold} className="absolute z-20 bottom-0 left-0" />
-        <img src={silver} className="absolute z-20 bottom-0 right-0" />
+        <img
+          src={gold}
+          className="absolute z-20 bottom-0 left-0 md:w-fit w-48"
+        />
+        <img
+          src={silver}
+          className="absolute z-20 bottom-0 right-0 md:w-fit w-48"
+        />
         <img src={grid} className="absolute z-20 w-full" />
 
-        <h1 className="__gildore_hero anton font-bold text-7xl uppercase relative z-20">
+        <h1 className="__gildore_hero anton font-bold text-5xl md:text-7xl uppercase relative z-20">
           Nature's Money. Reinvented.
         </h1>
 
-        <h2 className="__gildore_info inter w-2xl relative z-20">
+        <h2 className="__gildore_info inter md:w-2xl md:p-0 p-4 relative z-20">
           Save in real gold and silver, backed by bankss. Mint tokens, grow
           wealth, and own Earth's money - all on Solana
         </h2>
@@ -32,8 +42,9 @@ const Hero = () => {
           Join Waiting List
         </div>
 
-        <button className="__slanted_button absolute w-56 bottom-0 z-20">
-          SCROLL DOWN <span>V</span>
+        <button className="__slanted_button absolute w-fit text-nowrap flex-nowrap text-xs md:text-base md:w-56 bottom-0 z-20">
+          SCROLL DOWN{" "}
+          <ChevronDownIcon className="w-4 flex-nowrap inline-flex" />
         </button>
       </div>
     </div>

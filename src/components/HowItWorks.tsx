@@ -4,25 +4,30 @@ import wraped_cash from "../assets/landing/how_it_works/gildore_money_wrap.png";
 
 const HowItWorks = () => {
   return (
-    <div className="flex flex-col w-full relative md:min-h-[100vh] justify-center justify-self-center">
+    <div
+      id="how-it-works"
+      className="flex flex-col w-full relative md:min-h-[100vh] justify-center justify-self-center"
+    >
       <img src={grid} className="absolute z-10 w-full" />
-      <div className="__padded_container p-12 flex flex-col w-full h-full gap-8 mb-20">
+      <div className="__padded_container md:p-12 p-4 flex flex-col w-full h-full gap-8 mb-20">
         <div className="__how flex flex-col items-center w-full">
           <div className="__header_text anton text-4xl text-center uppercase w-70 ">
             How Gildore Works
           </div>
-          <div className="__backstory w-96 text-center">
+          <div className="__backstory md:w-96 md:text-base text-sm text-center">
             A simple, secure way to own precious metals on the blockchain with
             full redemption rights.
           </div>
         </div>
       </div>
-      <div className="__stages flex md:flex-row p-12 flex-col md:flex-wrap gap-4 w-full justify-between relative z-20">
-        {steps.map((item) => {
+      <div className="__stages flex md:flex-row md:p-12 p-4 flex-col md:flex-wrap gap-4 w-full justify-between relative z-20">
+        {steps.map((item, index) => {
           return (
             <div
               className={` ${
                 item.image.length < 2 ? "bg-[#171717]" : "bg-transparent"
+              }  ${
+                index == 2 || index == 3 ? " md:flex hidden " : " "
               } __evolution_stages flex flex-col h-[420px] md:w-[32%] w-full p-8 py-12 justify-between`}
             >
               {item.image.length < 2 && (

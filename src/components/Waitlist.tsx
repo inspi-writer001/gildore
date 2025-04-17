@@ -25,7 +25,10 @@ const Waitlist = () => {
     }
   };
   return (
-    <div className="flex flex-col w-full relative items-center justify-self-center overflow-hidden">
+    <div
+      id="waitlist"
+      className="flex flex-col w-full relative items-center justify-self-center overflow-hidden"
+    >
       <img src={grid} className="absolute z-10 w-full" />
       <div className="__padded_container p-12 flex flex-col w-full h-full gap-8 mb-20 relative z-20">
         <div className="__how flex flex-col items-center w-full">

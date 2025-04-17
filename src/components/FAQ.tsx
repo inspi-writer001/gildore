@@ -7,14 +7,17 @@ const FAQ = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
   return (
-    <div className="flex flex-col w-full relative md:min-h-[100vh] items-center justify-self-center">
+    <div
+      id="faq"
+      className="flex flex-col w-full relative md:min-h-[100vh] items-center justify-self-center"
+    >
       <img src={grid} className="absolute z-10 w-full" />
-      <div className="__padded_container p-12 flex flex-col w-full h-full gap-8 mb-20 relative z-20">
+      <div className="__padded_container md:p-12 p-4 flex flex-col w-full h-full gap-8 mb-20 relative z-20">
         <div className="__how flex flex-col items-center w-full">
           <div className="__header_text anton text-4xl text-center uppercase w-70 ">
             Frequently Asked Questions
           </div>
-          <div className="__backstory w-96 text-center">
+          <div className="__backstory md:w-96 md:text-base text-sm text-center">
             Find answers to common questions about Gildore tokens, storage,
             redemption, and security.
           </div>
