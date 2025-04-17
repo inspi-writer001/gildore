@@ -3,25 +3,34 @@ import grid from "../assets/grid.svg";
 const Waitlist = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    const response = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
-    });
+    setLoading(true);
 
-    const data = await response.json(); // Store parsed body here
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
 
-    if (response.ok) {
-      setSubmitted(true);
-    } else if (response.status === 409 && data.message) {
-      alert("Yo! 🤝, You're on the waitlist already");
-    } else {
+      const data = await response.json(); // Store parsed body here
+
+      if (response.ok) {
+        setSubmitted(true);
+      } else if (response.status === 409 && data.message) {
+        alert("Yo! 🤝, You're on the waitlist already");
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (error) {
       alert("Something went wrong");
+    } finally {
+      setLoading(false); // stop loading
     }
   };
   return (
@@ -54,9 +63,33 @@ const Waitlist = () => {
               <div className="relative flex flex-col items-center w-full">
                 <button
                   type="submit"
-                  className="__cta_button z-20 relative anton text-2xl py-2 rounded-sm w-full text-[#D48900] uppercase font-bold mt-2 border-b-2 border-[#FAC35D]"
+                  className="__cta_button z-20 flex flex-row justify-center items-center relative anton text-2xl py-2 rounded-sm w-full text-[#D48900] uppercase font-bold mt-2 border-b-2 border-[#FAC35D] min-h-12"
+                  disabled={loading}
                 >
-                  Continue
+                  {loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-[#D48900] self-center"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Continue"
+                  )}
                 </button>
                 <div className="anton relative z-10 text-2xl py-2 -mt-10.5 rounded-xl w-full text-[#C78406] bg-[#C78406] uppercase">
                   Continue

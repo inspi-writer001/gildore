@@ -55,7 +55,7 @@ const Hero = () => {
 
         <button className="__slanted_button absolute w-fit text-nowrap flex-nowrap text-xs md:text-base md:w-56 bottom-0 z-20">
           SCROLL DOWN{" "}
-          <ChevronDownIcon className="w-4 flex-nowrap inline-flex" />
+          <ChevronDownIcon className="bounce-soft w-4 flex-nowrap inline-flex" />
         </button>
       </div>
     </div>
