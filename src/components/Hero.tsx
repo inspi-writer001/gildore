@@ -4,8 +4,6 @@ import gold from "../assets/landing/gildore_gold.png";
 import silver from "../assets/landing/gildore_silver.png";
 import grid from "../assets/grid.svg";
 
-export { grid };
-
 const Hero = () => {
   return (
     <div className="flex flex-col w-full p-4 relative h-[100vh] justify-center justify-self-center">
