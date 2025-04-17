@@ -35,7 +35,18 @@ const Hero = () => {
           wealth, and own Earth's money - all on Solana
         </h2>
 
-        <div className="__cta_button z-20 relative anton text-2xl py-2 rounded-sm w-60 text-[#D48900] uppercase font-bold mt-8 border-b-2 border-[#FAC35D]">
+        <div
+          className="__cta_button z-20 relative anton text-2xl py-2 rounded-sm w-60 text-[#D48900] uppercase font-bold mt-8 border-b-2 border-[#FAC35D]"
+          onClick={(e) => {
+            e.preventDefault();
+            const targetId = "#waitlist";
+            const target = document.querySelector(targetId);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+              window.history.pushState(null, "", targetId);
+            }
+          }}
+        >
           Join Waiting List
         </div>
         <div className="anton relative z-10 text-2xl py-2 -mt-8 rounded-sm w-60 text-[#C78406] bg-[#C78406] uppercase">
