@@ -8,16 +8,18 @@ const Waitlist = () => {
     e.preventDefault();
     if (!email) return;
 
-    // /api/signup
-    // Replace with your Supabase or API endpoint
     const response = await fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })
     });
 
+    const data = await response.json(); // Store parsed body here
+
     if (response.ok) {
       setSubmitted(true);
+    } else if (response.status === 409 && data.message) {
+      alert("Yo! 🤝, You're on the waitlist already");
     } else {
       alert("Something went wrong");
     }
