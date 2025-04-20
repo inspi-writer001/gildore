@@ -117,9 +117,9 @@ const steps: IStep[] = [
   },
   {
     step: "3",
-    header: "Trade or Hold",
+    header: "Lend or Hold",
     description:
-      "Freely trade your tokens on Solana DEXs or hold them as a hedge against inflation.",
+      "Freely Lend your Assets on Solana Lending and Borrowing Platforms or hold them as a hedge against inflation.",
     image: "",
     is_gold: true
   },
