@@ -31,7 +31,7 @@ const Hero = () => {
         </h1>
 
         <h2 className="__gildore_info inter md:w-2xl md:p-0 p-4 relative z-20">
-          Save in real gold and silver, backed by bankss. Mint tokens, grow
+          Save in real gold and silver, backed by banks. Mint tokens, grow
           wealth, and own Earth's money - all on Solana
         </h2>
 
