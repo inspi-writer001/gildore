@@ -1,0 +1,44 @@
+import { createBrowserRouter } from "react-router";
+
+import { Home } from "../pages/home";
+import { AuthLayout } from "../components/layout/AuthLayout";
+import { Auth } from "../pages/auth";
+import { Dashboard } from "../pages/dashboard";
+import { DashboardLayout } from "../components/layout/DashboardLayout";
+import { Marketplace } from "../pages/dashboard/marketplace";
+import { Porfolio } from "../pages/dashboard/portfolio";
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: Home,
+  },
+  {
+    path: "auth",
+    Component: AuthLayout,
+    children: [
+      {
+        index: true,
+        Component: Auth,
+      },
+    ],
+  },
+  {
+    path: "dashboard",
+    Component: DashboardLayout,
+    children: [
+        {
+            index: true,
+            Component: Dashboard
+        },
+        {
+            path: "marketplace",
+            Component: Marketplace
+        },
+        {
+            path: "portfolio",
+            Component: Porfolio
+        }
+    ]
+  }
+]);

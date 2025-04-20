@@ -1,0 +1,1 @@
+export const privyApiKey = import.meta.env.VITE_PRIVY_APP_ID
