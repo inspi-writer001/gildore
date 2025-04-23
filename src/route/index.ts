@@ -7,6 +7,7 @@ import { Dashboard } from "../pages/dashboard";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { Marketplace } from "../pages/dashboard/marketplace";
 import { Porfolio } from "../pages/dashboard/portfolio";
+import {DashboardSettingsLayout} from "../components/layout/DashboardSettingsLayout.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,16 @@ export const router = createBrowserRouter([
         {
             path: "portfolio",
             Component: Porfolio
+        },
+        {
+            path: "settings",
+            Component: DashboardSettingsLayout,
+            children: [
+                {
+                    index: true,
+                    Component: () => `<div>Settings</div>`
+                }
+            ]
         }
     ]
   }

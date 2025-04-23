@@ -1,8 +1,12 @@
-#root {
+.gildore_landing {
   max-width: 1500px;
   margin: 0 auto;
   width: 100%;
   text-align: center;
+}
+
+#root {
+  width: 100%;
 }
 
 .anton {

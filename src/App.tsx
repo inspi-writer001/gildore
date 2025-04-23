@@ -4,7 +4,7 @@ import { router } from "./route";
 
 function App() {
   return (
-    <div className="gildore_landing flex flex-col w-full h-full overflow-hidden">
+    <div className="">
         <RouterProvider router={router} />
     </div>
   );

@@ -102,6 +102,10 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-light-gray: var(--light-gray);
+  
+/* font family */
+  --font-glory: "Glory", sans-serif;
+  --font-impact: "Impact", sans-serif;
 }
 
 .dark {
