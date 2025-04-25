@@ -1,23 +1,31 @@
-import {AnalyticsCards} from "../../../components/dashboard/AnalyticsCards.tsx";
-import {BuyGoldCard} from "../../../components/dashboard/BuyGoldCard.tsx";
+import {Input} from "../../../components/ui/input.tsx";
+import {PrimaryButton} from "../../../components/PrimaryButton.tsx";
 
-
-export const Settings = () => {
+export const DashboardSettingsIndex = () => {
     return (
-        <div className="w-full h-[calc(100vh_-_88px)] flex flex-col gap-4 overflow-y-auto">
-            <AnalyticsCards />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 h-full px-4">
-                <div className="block md:hidden w-full mb-4">
-                    <BuyGoldCard />
+        <div className="flex flex-col gap-16 items-center max-w-[32.563rem] mx-auto">
+           <div className={'flex flex-col items-center gap-3'}>
+               <div className={'w-16 h-16'}>
+                   <img src={'/src/assets/dashboard/personal-details-icon.svg'} alt={'personal details'} />
+               </div>
+                <p className={'font-glory text-2xl font-bold'}>Personal Details</p>
+           </div>
+            <form className={'w-full'}>
+                <div className={'grid grid-cols-2 gap-4'}>
+                    <div className={'flex flex-col gap-2'}>
+                        <Input type="text" id="first-name" placeholder={'Enter your first name'}/>
+                    </div>
+                    <div className={'flex flex-col gap-2'}>
+                        <Input type="text" id="last-name" placeholder={'Enter your last name'}/>
+                    </div>
+                    <div className={'flex flex-col col-span-2 gap-2'}>
+                        <Input type="email" id="email" placeholder={'Enter your email'}/>
+                    </div>
                 </div>
-
-                <div className="col-span-2 min-h-[300px] h-full bg-card py-4"></div>
-
-                <div className="hidden md:block">
-                    <BuyGoldCard />
+                <div className={'mt-8'}>
+                    <PrimaryButton>Update</PrimaryButton>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

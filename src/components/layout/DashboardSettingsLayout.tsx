@@ -32,7 +32,7 @@ export const DashboardSettingsLayout = () => {
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 bg-card p-8">
+            <div className="flex-1 bg-card p-8 pt-[6.813rem]">
                 <Outlet/>
             </div>
         </div>
