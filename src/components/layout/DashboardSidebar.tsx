@@ -13,7 +13,9 @@ export const DashboardSidebar = () => {
                 {sidebarItems.map((item) => (
                   <NavLink
                     to={item.link}
-                    end={false}
+                    end={
+                      item.link != '/dashboard/settings'
+                    }
                     className={({ isActive, isPending, isTransitioning }) =>
                         cn(
                             "text-base font-medium inline-flex font-glory items-center px-6 gap-4",
