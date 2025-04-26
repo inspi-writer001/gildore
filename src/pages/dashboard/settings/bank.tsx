@@ -1,13 +1,6 @@
 import {Input} from "../../../components/ui/input.tsx";
 import {PrimaryButton} from "../../../components/PrimaryButton.tsx";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger
-} from "../../../components/ui/select.tsx";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger} from "../../../components/ui/select.tsx";
 
 export const BankSettings = () => {
     return (
@@ -25,11 +18,10 @@ export const BankSettings = () => {
                     </div>
                     <Select>
                         <SelectTrigger className="w-full">
-                            <span>{"Select a country"}</span>
+                            <span>{"Select a bank"}</span>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectLabel>Choose an Option</SelectLabel>
                                 <SelectItem value="option1">Option 1</SelectItem>
                                 <SelectItem value="option2">Option 2</SelectItem>
                                 <SelectItem value="option3">Option 3</SelectItem>

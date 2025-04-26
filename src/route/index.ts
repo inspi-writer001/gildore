@@ -11,6 +11,7 @@ import {DashboardSettingsLayout} from "../components/layout/DashboardSettingsLay
 import {DashboardSettingsIndex} from "../pages/dashboard/settings";
 import {BankSettings} from "../pages/dashboard/settings/bank.tsx";
 import {AddressSettings} from "../pages/dashboard/settings/address.tsx";
+import {DashboardSettingsPersonal} from "../pages/dashboard/settings/personal.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
                 {
                     index: true,
                     Component: DashboardSettingsIndex
+                },
+                {
+                    path: "personal",
+                    Component: DashboardSettingsPersonal
                 },
                 {
                     path: "bank",

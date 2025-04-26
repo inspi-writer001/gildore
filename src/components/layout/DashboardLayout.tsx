@@ -21,7 +21,7 @@ export const DashboardLayout = () => {
     }, [ready, authenticated, navigate]);
 
   return (
-    <div className="flex flex-col p-4 isolate relative min-h-screen flex-1">
+    <div className="flex flex-col pt-4 px-4 isolate relative min-h-screen flex-1">
         <div className="inset-0 absolute -z-10">
           <img src={grid} className="object-cover h-full w-full" alt="grid"/>
         </div>
