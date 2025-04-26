@@ -4,7 +4,7 @@ import { sidebarItems } from "../../constant/menu";
 
 export const DashboardBottomMenu = () => {
   return (
-    <div className="absolute bottom-0 left-0 right-0 block md:hidden z-100">
+    <div className="sticky bottom-0 left-0 mt-4 right-0 block md:hidden z-100">
       <div className="flex items-center justify-between bg-card p-4 border-t border-t-gray-100/10">
         {sidebarItems.map((item) => (
           <NavLink

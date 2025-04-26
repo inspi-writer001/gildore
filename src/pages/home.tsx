@@ -7,13 +7,15 @@ import Waitlist from "../components/Waitlist";
 
 export const Home = () => {
   return (
-    <>
-      <Navbar />
-      <Hero />
-      <Evolution />
-      <HowItWorks />
-      <FAQ />
-      <Waitlist />
-    </>
+      <div className="gildore_landing mx-auto w-full">
+        <div className="flex flex-col w-full h-full overflow-hidden">
+          <Navbar />
+          <Hero />
+          <Evolution />
+          <HowItWorks />
+          <FAQ />
+          <Waitlist />
+        </div>
+      </div>
   );
 };
