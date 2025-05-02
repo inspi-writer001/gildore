@@ -7,7 +7,7 @@ export const BankSettings = () => {
         <div className="flex flex-col gap-16 items-center max-w-[32.563rem] mx-auto">
             <div className={'flex flex-col items-center gap-3'}>
                 <div className={'w-16 h-16'}>
-                    <img src={'/src/assets/dashboard/personal-details-icon.svg'} alt={'personal details'}/>
+                    <img src={'/images/dashboard/personal-details-icon.svg'} alt={'personal details'}/>
                 </div>
                 <p className={'font-glory text-2xl font-bold'}>Bank Details</p>
             </div>
