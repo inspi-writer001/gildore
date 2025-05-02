@@ -12,10 +12,10 @@ export const DashboardSettingsPersonal = () => {
            </div>
             <form className={'w-full'}>
                 <div className={'grid grid-cols-2 gap-4'}>
-                    <div className={'flex flex-col gap-2'}>
+                    <div className={'flex flex-col col-span-2 md:col-span-1 gap-2'}>
                         <Input type="text" id="first-name" placeholder={'Enter your first name'}/>
                     </div>
-                    <div className={'flex flex-col gap-2'}>
+                    <div className={'flex flex-col col-span-2 md:col-span-1 gap-2'}>
                         <Input type="text" id="last-name" placeholder={'Enter your last name'}/>
                     </div>
                     <div className={'flex flex-col col-span-2 gap-2'}>
