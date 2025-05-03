@@ -22,7 +22,7 @@ export const DashboardBottomMenu = () => {
             {({ isActive, isPending }) => (
               <>
                 <img
-                  src={`/src/assets/dashboard/${item.icon}${
+                  src={`/images/dashboard/${item.icon}${
                     isActive ? "_active" : "_inactive"
                   }.svg`}
                   alt={item.name}

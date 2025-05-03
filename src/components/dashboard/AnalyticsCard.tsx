@@ -53,7 +53,7 @@ export const AnalyticsCard = ({ type = "default" }: AnalyticsCardProps) => {
       )}
 
       <img
-        src={`/src/assets/dashboard/analytics-card-pattern-${type}.svg`}
+        src={`/images/dashboard/analytics-card-pattern-${type}.svg`}
         className="w-full h-auto absolute -bottom-4  md:bottom-0 left-0"
       />
     </div>

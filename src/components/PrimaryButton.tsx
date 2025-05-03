@@ -1,6 +1,6 @@
 import React from "react";
 
-export const PrimaryButton = ({ children }: { children: React.ReactNode }) => {
+export const PrimaryButton = ({children}: {children: React.ReactNode}) => {
   return (
     <div className="relative flex flex-col items-center w-full">
       <button

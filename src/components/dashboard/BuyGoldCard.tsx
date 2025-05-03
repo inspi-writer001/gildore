@@ -7,9 +7,9 @@ export const BuyGoldCard = () => {
             <p className="text-left md:text-center text-xs md:text-sm">Buy Gold & Silver from the list in our marketplace</p>
         </div>
 
-        <img src="src/assets/dashboard/gold-bar.png" className="w-[140px] md:w-[300px] h-auto -mb-12 z-10" />
+        <img src="/images/dashboard/gold-bar.png" className="w-[140px] md:w-[300px] h-auto -mb-12 z-10" />
 
-        <img src="src/assets/dashboard/analytics-card-pattern-gold.svg" className="absolute -bottom-2 md:bottom-0 left-0 w-full h-auto" />
+        <img src="/images/dashboard/analytics-card-pattern-gold.svg" className="absolute -bottom-2 md:bottom-0 left-0 w-full h-auto" />
     </div>
   )
 }
