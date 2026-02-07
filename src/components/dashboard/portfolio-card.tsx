@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import type { EnrichedListing } from "../../types/marketplace";
-import { usePurchaseNft } from "../../hooks/useTransactions";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import type { PortfolioAsset } from "../../types/marketplace";
+import { useRedeemAsset } from "../../hooks/useTransactions";
 
-interface ProductCardProps {
-  listing: EnrichedListing;
+interface PortfolioCardProps {
+  asset: PortfolioAsset;
 }
 
-export const ProductCard = ({ listing }: ProductCardProps) => {
+export const PortfolioCard = ({ asset }: PortfolioCardProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
-  const purchase = usePurchaseNft();
+  const redeem = useRedeemAsset();
 
-  const handlePurchase = () => {
-    purchase.mutate(
+  const canRedeem = !!asset.listing;
+  const image = asset.metadata?.image;
+  const name = asset.metadata?.name || asset.name;
+
+  const handleRedeem = () => {
+    if (!asset.listing) return;
+
+    redeem.mutate(
       {
-        assetAddress: listing.assetAddress,
-        seller: listing.account.seller,
+        assetAddress: asset.address,
+        seller: asset.listing.seller,
       },
       {
         onSuccess: () => {
@@ -30,51 +37,53 @@ export const ProductCard = ({ listing }: ProductCardProps) => {
 
   return (
     <div className="w-full py-4 bg-card flex flex-col justify-center items-center cursor-pointer h-[286px] relative overflow-hidden">
-      {listing.metadata.image ? (
+      {image ? (
         <img
-          src={listing.metadata.image}
-          alt={listing.metadata.name}
+          src={image}
+          alt={name}
           className="w-[66px] h-[66px] object-contain"
         />
       ) : (
         <img
           src="/images/marketplace/gold-bar-product.png"
           className="w-[66px] h-auto"
-          alt={listing.metadata.name}
+          alt={name}
         />
       )}
 
       <h5 className="text-center text-2xl font-bold anton uppercase text-white pt-4">
-        {listing.metadata.name}
+        {name}
       </h5>
 
-      <p className="text-sm text-center text-[#D1D1D1] pt-1">
-        {listing.priceInSol} SOL
-      </p>
+      {asset.listing && (
+        <p className="text-sm text-center text-[#D1D1D1] pt-1">
+          {asset.listing.price.toNumber() / LAMPORTS_PER_SOL} SOL
+        </p>
+      )}
 
-      {!showConfirm && (
+      {canRedeem && !showConfirm && (
         <button
           onClick={() => setShowConfirm(true)}
-          className="mt-3 px-6 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
+          className="mt-3 px-6 py-1.5 bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
         >
-          Buy
+          Redeem
         </button>
       )}
 
       {showConfirm && (
         <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-3 p-4">
-          <p className="text-white text-sm text-center">
-            Purchase <span className="font-bold">{listing.metadata.name}</span> for{" "}
-            <span className="font-bold">{listing.priceInSol} SOL</span>?
+          <p className="text-white text-sm text-center font-bold">Redeem Asset</p>
+          <p className="text-white/70 text-xs text-center">
+            A half-fee will be charged and this asset will be burned for physical fulfillment.
           </p>
 
-          {purchase.isPending ? (
+          {redeem.isPending ? (
             <Loader2 className="w-6 h-6 animate-spin text-white" />
           ) : (
             <div className="flex gap-2">
               <button
-                onClick={handlePurchase}
-                className="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
+                onClick={handleRedeem}
+                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
               >
                 Confirm
               </button>
@@ -87,9 +96,9 @@ export const ProductCard = ({ listing }: ProductCardProps) => {
             </div>
           )}
 
-          {purchase.isError && (
+          {redeem.isError && (
             <p className="text-red-400 text-xs text-center mt-1">
-              Transaction failed. Please try again.
+              Redeem failed. Please try again.
             </p>
           )}
         </div>

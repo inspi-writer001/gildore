@@ -12,6 +12,10 @@ import {DashboardSettingsIndex} from "../pages/dashboard/settings";
 import {BankSettings} from "../pages/dashboard/settings/bank.tsx";
 import {AddressSettings} from "../pages/dashboard/settings/address.tsx";
 import {DashboardSettingsPersonal} from "../pages/dashboard/settings/personal.tsx";
+import { AdminLayout } from "../components/layout/AdminLayout";
+import { AdminIndex } from "../pages/dashboard/admin";
+import { CreateNft } from "../pages/dashboard/admin/create-nft";
+import { ListNft } from "../pages/dashboard/admin/list-nft";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +47,24 @@ export const router = createBrowserRouter([
         {
             path: "portfolio",
             Component: Porfolio
+        },
+        {
+            path: "admin",
+            Component: AdminLayout,
+            children: [
+                {
+                    index: true,
+                    Component: AdminIndex
+                },
+                {
+                    path: "create-nft",
+                    Component: CreateNft
+                },
+                {
+                    path: "list-nft",
+                    Component: ListNft
+                }
+            ]
         },
         {
             path: "settings",

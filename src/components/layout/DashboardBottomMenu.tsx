@@ -1,13 +1,21 @@
 import { NavLink } from "react-router";
 import { cn } from "../../utils";
 import { sidebarItems } from "../../constant/menu";
+import { useIsAdmin } from "../../hooks/useIsAdmin";
 
 export const DashboardBottomMenu = () => {
+  const isAdmin = useIsAdmin();
+
+  const visibleItems = sidebarItems.filter(
+    (item) => !item.adminOnly || isAdmin
+  );
+
   return (
     <div className="sticky bottom-0 left-0 mt-4 right-0 block md:hidden z-100">
       <div className="flex items-center justify-between bg-card p-4 border-t border-t-gray-100/10">
-        {sidebarItems.map((item) => (
+        {visibleItems.map((item) => (
           <NavLink
+            key={item.link}
             to={item.link}
             end
             className={({ isActive, isPending, isTransitioning }) =>

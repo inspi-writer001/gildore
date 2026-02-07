@@ -1,4 +1,11 @@
-export const sidebarItems = [
+export interface SidebarItem {
+  name: string;
+  link: string;
+  icon: string;
+  adminOnly?: boolean;
+}
+
+export const sidebarItems: SidebarItem[] = [
   {
     name: "Dashboard",
     link: "/dashboard",
@@ -13,6 +20,12 @@ export const sidebarItems = [
     name: "Portfolio",
     link: "/dashboard/portfolio",
     icon: "portfolio_icon",
+  },
+  {
+    name: "Admin",
+    link: "/dashboard/admin",
+    icon: "admin_icon",
+    adminOnly: true,
   },
   {
     name: "Settings",
