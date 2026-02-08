@@ -24,10 +24,8 @@ export const PYTH_SYMBOLS = {
 } as const;
 
 export const TIME_RANGE_CONFIGS: Record<TimeRange, TimeRangeConfig> = {
-  "1H": { seconds: 3600, resolution: "1" },
-  "1D": { seconds: 86400, resolution: "5" },
   "7D": { seconds: 604800, resolution: "60" },
-  "30D": { seconds: 2592000, resolution: "1D" },
+  "30D": { seconds: 2592000, resolution: "60" },
 };
 
 export function buildPythPriceUrl(feedIds: string[]): string {

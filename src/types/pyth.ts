@@ -52,7 +52,7 @@ export interface TradingViewHistoryResponse {
   v: number[]; // volumes
 }
 
-export type TimeRange = "1H" | "1D" | "7D" | "30D";
+export type TimeRange = "7D" | "30D";
 
 export interface TimeRangeConfig {
   seconds: number; // total duration in seconds

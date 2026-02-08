@@ -22,6 +22,8 @@ export interface PythPricesData {
   isLoading: boolean;
   isHistoryLoading: boolean;
   isError: boolean;
+  isHistoryError: boolean;
+  refetchHistory: () => void;
   selectedMetal: MetalType;
   selectedTimeRange: TimeRange;
   setMetal: (metal: MetalType) => void;
@@ -30,7 +32,7 @@ export interface PythPricesData {
 
 export function usePythPrices(): PythPricesData {
   const [selectedMetal, setMetal] = useState<MetalType>("XAU");
-  const [selectedTimeRange, setTimeRange] = useState<TimeRange>("1D");
+  const [selectedTimeRange, setTimeRange] = useState<TimeRange>("7D");
 
   // Live price polling (both metals, 60s interval)
   const {
@@ -62,12 +64,18 @@ export function usePythPrices(): PythPricesData {
   });
 
   // Historical candle data
-  const { data: historicalCandles, isLoading: isHistoryLoading } = useQuery({
+  const {
+    data: historicalCandles,
+    isLoading: isHistoryLoading,
+    isError: isHistoryError,
+    refetch: refetchHistory,
+  } = useQuery({
     queryKey: ["pyth-history", selectedMetal, selectedTimeRange],
     queryFn: () =>
       fetchHistoricalCandles(PYTH_SYMBOLS[selectedMetal], selectedTimeRange),
     staleTime: 2 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    retry: 2,
   });
 
   return {
@@ -77,6 +85,8 @@ export function usePythPrices(): PythPricesData {
     isLoading: isLiveLoading,
     isHistoryLoading,
     isError,
+    isHistoryError,
+    refetchHistory,
     selectedMetal,
     selectedTimeRange,
     setMetal,
