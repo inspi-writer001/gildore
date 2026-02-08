@@ -17,6 +17,21 @@ import type {
 } from "../types/marketplace";
 
 /**
+ * Read a uint32 LE from a Uint8Array/Buffer at the given offset.
+ * Uses DataView for cross-platform browser compatibility.
+ */
+function readU32LE(data: Uint8Array, offset: number): number {
+  return (
+    data[offset] |
+    (data[offset + 1] << 8) |
+    (data[offset + 2] << 16) |
+    ((data[offset + 3] << 24) >>> 0)
+  ) >>> 0;
+}
+
+const textDecoder = new TextDecoder();
+
+/**
  * Parse the URI from a raw MPL Core BaseAssetV1 account buffer.
  *
  * Layout (after the 1-byte Key discriminator):
@@ -25,7 +40,7 @@ import type {
  *   name:             4 byte len + utf8
  *   uri:              4 byte len + utf8
  */
-function parseMplCoreAsset(data: Buffer): {
+function parseMplCoreAsset(data: Uint8Array): {
   owner: PublicKey;
   name: string;
   uri: string;
@@ -33,7 +48,7 @@ function parseMplCoreAsset(data: Buffer): {
   let offset = 1; // skip Key discriminator byte
 
   // owner - 32 bytes
-  const owner = new PublicKey(data.subarray(offset, offset + 32));
+  const owner = new PublicKey(data.slice(offset, offset + 32));
   offset += 32;
 
   // updateAuthority - enum tag (1 byte)
@@ -46,15 +61,15 @@ function parseMplCoreAsset(data: Buffer): {
   // uaTag === 0 (None): no extra data
 
   // name - borsh string: 4 byte LE length + utf8 bytes
-  const nameLen = data.readUInt32LE(offset);
+  const nameLen = readU32LE(data, offset);
   offset += 4;
-  const name = data.subarray(offset, offset + nameLen).toString("utf8");
+  const name = textDecoder.decode(data.slice(offset, offset + nameLen));
   offset += nameLen;
 
   // uri - borsh string: 4 byte LE length + utf8 bytes
-  const uriLen = data.readUInt32LE(offset);
+  const uriLen = readU32LE(data, offset);
   offset += 4;
-  const uri = data.subarray(offset, offset + uriLen).toString("utf8");
+  const uri = textDecoder.decode(data.slice(offset, offset + uriLen));
 
   return { owner, name, uri };
 }
@@ -93,46 +108,62 @@ export function useActiveListings() {
       if (!program) return [];
 
       const allListings = await program.account.listing.all();
-      const activeListings = allListings.filter(
-        (l) => (l.account as unknown as ListingAccount).isActive
-      );
+      const activeListings = allListings.filter((l) => {
+        const acct = l.account as unknown as ListingAccount;
+        return acct.isActive;
+      });
 
       const enriched: EnrichedListing[] = [];
 
       for (const listing of activeListings) {
-        const account = listing.account as unknown as ListingAccount;
-        const assetAddress = account.mint;
-        const marketplacePDA = getMarketplacePDA();
-        const listingPDA = getListingPDA(marketplacePDA, assetAddress);
-        const escrowPDA = getEscrowPDA(listingPDA);
-
-        let metadata: NftMetadata = {
-          name: "Unknown",
-          image: "",
-          description: "",
-        };
-
         try {
-          const assetInfo = await connection.getAccountInfo(assetAddress);
-          if (assetInfo?.data) {
-            const parsed = parseMplCoreAsset(assetInfo.data as Buffer);
-            metadata = await fetchNftMetadata(parsed.uri);
-            if (!metadata.name || metadata.name === "Unknown") {
-              metadata.name = parsed.name;
-            }
-          }
-        } catch {
-          // keep default metadata
-        }
+          const account = listing.account as unknown as ListingAccount;
+          const assetAddress = account.mint;
+          const marketplacePDA = getMarketplacePDA();
+          const listingPDA = getListingPDA(marketplacePDA, assetAddress);
+          const escrowPDA = getEscrowPDA(listingPDA);
 
-        enriched.push({
-          publicKey: listing.publicKey,
-          account,
-          assetAddress,
-          metadata,
-          priceInSol: account.price.toNumber() / LAMPORTS_PER_SOL,
-          escrowPDA,
-        });
+          let metadata: NftMetadata = {
+            name: "Unknown",
+            image: "",
+            description: "",
+          };
+
+          try {
+            const assetInfo = await connection.getAccountInfo(assetAddress);
+            if (assetInfo?.data) {
+              const parsed = parseMplCoreAsset(
+                new Uint8Array(assetInfo.data)
+              );
+              metadata = await fetchNftMetadata(parsed.uri);
+              if (!metadata.name || metadata.name === "Unknown") {
+                metadata.name = parsed.name;
+              }
+            }
+          } catch (metaErr) {
+            console.warn("Failed to load metadata for listing", listing.publicKey.toBase58(), metaErr);
+          }
+
+          let priceInSol = 0;
+          try {
+            priceInSol = account.price.toNumber() / LAMPORTS_PER_SOL;
+          } catch {
+            // BN too large for toNumber — fall back to string conversion
+            priceInSol =
+              Number(account.price.toString()) / LAMPORTS_PER_SOL;
+          }
+
+          enriched.push({
+            publicKey: listing.publicKey,
+            account,
+            assetAddress,
+            metadata,
+            priceInSol,
+            escrowPDA,
+          });
+        } catch (listingErr) {
+          console.error("Failed to process listing", listing.publicKey.toBase58(), listingErr);
+        }
       }
 
       return enriched;
@@ -182,7 +213,7 @@ export function usePortfolioAssets() {
       const assets: PortfolioAsset[] = [];
 
       for (const { pubkey, account: accInfo } of accounts) {
-        const parsed = parseMplCoreAsset(accInfo.data as Buffer);
+        const parsed = parseMplCoreAsset(new Uint8Array(accInfo.data));
 
         let metadata: NftMetadata | null = null;
         try {
@@ -252,7 +283,7 @@ export function useAdminAssets() {
       const assets: AdminAsset[] = [];
 
       for (const { pubkey, account: accInfo } of accounts) {
-        const parsed = parseMplCoreAsset(accInfo.data as Buffer);
+        const parsed = parseMplCoreAsset(new Uint8Array(accInfo.data));
 
         let isListed = false;
         try {
