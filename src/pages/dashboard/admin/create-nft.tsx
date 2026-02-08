@@ -1,30 +1,103 @@
 import { useState, type FormEvent } from "react";
-import { Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../../../components/ui/input";
+import { Textarea } from "../../../components/ui/textarea";
 import { PrimaryButton } from "../../../components/PrimaryButton";
+import { ImageUploadZone } from "../../../components/admin/ImageUploadZone";
+import { TraitRow } from "../../../components/admin/TraitRow";
+import {
+  MintProgressIndicator,
+  type MintStep,
+} from "../../../components/admin/MintProgressIndicator";
 import { useCreateNft } from "../../../hooks/useAdminTransactions";
+import { useTraitTypes } from "../../../hooks/useTraitTypes";
+import { useUploadToIrys } from "../../../hooks/useUploadToIrys";
+import { useSolanaProvider } from "../../../hooks/useSolanaProvider";
+
+interface Trait {
+  trait_type: string;
+  value: string;
+}
 
 export const CreateNft = () => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [name, setName] = useState("");
-  const [uri, setUri] = useState("");
+  const [symbol, setSymbol] = useState("");
+  const [description, setDescription] = useState("");
+  const [traits, setTraits] = useState<Trait[]>([]);
+  const [mintStep, setMintStep] = useState<MintStep>("idle");
+  const [error, setError] = useState<string | null>(null);
+
   const createNft = useCreateNft();
+  const { traitTypes, createTraitType } = useTraitTypes();
+  const { uploadNftMetadata, isReady: isUploadReady } = useUploadToIrys();
+  const { walletAddress } = useSolanaProvider();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !uri.trim()) return;
+  const traitTypeOptions = traitTypes.map((t) => t.name);
+  const isBusy = mintStep !== "idle" && mintStep !== "complete" && mintStep !== "error";
 
-    createNft.mutate(
-      { name: name.trim(), uri: uri.trim() },
-      {
-        onSuccess: (result) => {
-          setName("");
-          setUri("");
-          alert(
-            `NFT created!\nAsset: ${result.assetAddress.toBase58()}\nTx: ${result.tx}`
-          );
-        },
-      }
+  const addTrait = () => {
+    setTraits((prev) => [...prev, { trait_type: "", value: "" }]);
+  };
+
+  const updateTrait = (index: number, field: keyof Trait, val: string) => {
+    setTraits((prev) =>
+      prev.map((t, i) => (i === index ? { ...t, [field]: val } : t))
     );
+  };
+
+  const removeTrait = (index: number) => {
+    setTraits((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const resetForm = () => {
+    setImageFile(null);
+    setName("");
+    setSymbol("");
+    setDescription("");
+    setTraits([]);
+    setMintStep("idle");
+    setError(null);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !imageFile || !walletAddress) return;
+
+    setError(null);
+
+    try {
+      // Steps 1-2: upload image + metadata to Irys
+      const metadataUri = await uploadNftMetadata(
+        {
+          imageFile,
+          name: name.trim(),
+          symbol: symbol.trim(),
+          description: description.trim(),
+          traits: traits.filter((t) => t.trait_type.trim() && t.value.trim()),
+          creatorAddress: walletAddress,
+        },
+        (step) => setMintStep(step)
+      );
+
+      // Step 3: mint on-chain
+      setMintStep("minting");
+      const result = await createNft.mutateAsync({
+        name: name.trim(),
+        uri: metadataUri,
+      });
+
+      setMintStep("complete");
+      alert(
+        `NFT created!\nAsset: ${result.assetAddress.toBase58()}\nTx: ${result.tx}`
+      );
+      resetForm();
+    } catch (err) {
+      setMintStep("error");
+      setError(
+        err instanceof Error ? err.message : "Failed to create NFT. Please try again."
+      );
+    }
   };
 
   return (
@@ -39,12 +112,14 @@ export const CreateNft = () => {
         </div>
         <p className="font-glory text-2xl font-bold">Create NFT</p>
         <p className="text-white/50 text-sm text-center">
-          Mint a new MPL Core asset to this wallet
+          Upload an image, add metadata, and mint a new MPL Core asset
         </p>
       </div>
 
       <form className="w-full" onSubmit={handleSubmit}>
         <div className="grid gap-4">
+          <ImageUploadZone file={imageFile} onFileChange={setImageFile} />
+
           <div className="flex flex-col gap-2">
             <label className="text-xs uppercase font-glory text-light-gray tracking-wide">
               Name
@@ -55,41 +130,76 @@ export const CreateNft = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              disabled={isBusy}
             />
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-xs uppercase font-glory text-light-gray tracking-wide">
-              Metadata URI
+              Symbol
             </label>
             <Input
-              type="url"
-              placeholder="https://arweave.net/..."
-              value={uri}
-              onChange={(e) => setUri(e.target.value)}
-              required
+              type="text"
+              placeholder="e.g. GLD"
+              value={symbol}
+              onChange={(e) => setSymbol(e.target.value)}
+              disabled={isBusy}
             />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs uppercase font-glory text-light-gray tracking-wide">
+              Description
+            </label>
+            <Textarea
+              placeholder="Describe this NFT..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              disabled={isBusy}
+            />
+          </div>
+
+          {/* Traits section */}
+          <div className="flex flex-col gap-3">
+            <label className="text-xs uppercase font-glory text-light-gray tracking-wide">
+              Traits
+            </label>
+            {traits.map((trait, i) => (
+              <TraitRow
+                key={i}
+                traitType={trait.trait_type}
+                value={trait.value}
+                traitTypeOptions={traitTypeOptions}
+                onTraitTypeChange={(val) => updateTrait(i, "trait_type", val)}
+                onValueChange={(val) => updateTrait(i, "value", val)}
+                onRemove={() => removeTrait(i)}
+                onCreateNewTraitType={createTraitType}
+              />
+            ))}
+            <button
+              type="button"
+              onClick={addTrait}
+              disabled={isBusy}
+              className="flex items-center gap-2 text-sm text-[#FBC052] hover:text-[#FBC052]/80 transition-colors disabled:opacity-50"
+            >
+              <Plus className="w-4 h-4" />
+              Add Trait
+            </button>
           </div>
         </div>
 
-        {createNft.isError && (
-          <p className="text-red-400 text-sm mt-4">
-            {createNft.error instanceof Error
-              ? createNft.error.message
-              : "Failed to create NFT. Please try again."}
-          </p>
-        )}
-
         <div className="mt-8">
-          {createNft.isPending ? (
-            <div className="flex items-center justify-center py-4">
-              <Loader2 className="w-6 h-6 animate-spin text-[#FBC052]" />
-              <span className="ml-2 text-sm text-white/70">
-                Creating NFT...
-              </span>
-            </div>
+          {isBusy || mintStep === "complete" ? (
+            <MintProgressIndicator currentStep={mintStep} error={error} />
+          ) : mintStep === "error" ? (
+            <>
+              <MintProgressIndicator currentStep={mintStep} error={error} />
+              <PrimaryButton>Retry</PrimaryButton>
+            </>
           ) : (
-            <PrimaryButton>Create NFT</PrimaryButton>
+            <PrimaryButton>
+              {!isUploadReady ? "Connect Wallet to Mint" : "Create NFT"}
+            </PrimaryButton>
           )}
         </div>
       </form>

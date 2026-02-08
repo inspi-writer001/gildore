@@ -24,6 +24,11 @@ export interface NftMetadata {
   image: string;
   description?: string;
   attributes?: Array<{ trait_type: string; value: string }>;
+  symbol?: string;
+  properties?: {
+    files?: Array<{ uri: string; type: string }>;
+  };
+  creators?: Array<{ address: string; share: number }>;
 }
 
 export interface EnrichedListing {
