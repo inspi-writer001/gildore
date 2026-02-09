@@ -1,9 +1,13 @@
+import { useState } from "react"
 import { ListFilter, Loader2 } from "lucide-react"
 import { ProductCard } from "../../components/dashboard/product-card"
+import { ListingDetailPanel } from "../../components/dashboard/listing-detail-panel"
 import { useActiveListings } from "../../hooks/useMarketplace"
+import type { EnrichedListing } from "../../types/marketplace"
 
 export const Marketplace = () => {
   const { data: listings, isLoading, error } = useActiveListings();
+  const [selectedListing, setSelectedListing] = useState<EnrichedListing | null>(null);
 
   return (
     <div className="px-4">
@@ -34,10 +38,31 @@ export const Marketplace = () => {
         )}
 
         {!isLoading && !error && listings && listings.length > 0 && (
-          <div className="w-full max-h-[calc(100vh_-_150px)] h-auto grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 overflow-y-auto pb-20 items-start">
-            {listings.map((listing) => (
-              <ProductCard key={listing.publicKey.toBase58()} listing={listing} />
-            ))}
+          <div className="flex gap-4">
+            {/* Product grid — shrinks when panel is open */}
+            <div
+              className={`w-full max-h-[calc(100vh_-_150px)] h-auto grid gap-2 md:gap-4 overflow-y-auto pb-20 items-start ${
+                selectedListing
+                  ? "grid-cols-2 lg:grid-cols-2"
+                  : "grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
+              {listings.map((listing) => (
+                <ProductCard
+                  key={listing.publicKey.toBase58()}
+                  listing={listing}
+                  onSelect={setSelectedListing}
+                />
+              ))}
+            </div>
+
+            {/* Detail panel */}
+            {selectedListing && (
+              <ListingDetailPanel
+                listing={selectedListing}
+                onClose={() => setSelectedListing(null)}
+              />
+            )}
           </div>
         )}
     </div>

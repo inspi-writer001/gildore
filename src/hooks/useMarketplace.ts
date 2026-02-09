@@ -6,6 +6,7 @@ import {
   getListingPDA,
   getEscrowPDA,
   MPL_CORE_PROGRAM_ID,
+  PROGRAM_ID,
 } from "../constant";
 import type {
   MarketplaceAccount,
@@ -15,6 +16,15 @@ import type {
   ListingAccount,
   AdminAsset,
 } from "../types/marketplace";
+
+/** Listing account discriminator bytes (from IDL) */
+const LISTING_DISCRIMINATOR = [218, 32, 50, 73, 43, 134, 26, 58];
+
+/**
+ * Expected byte size of a Listing account:
+ * 8 (discriminator) + 32 (seller) + 32 (mint) + 8 (price) + 1 (bump) + 2 (tokenId) + 1 (isActive) + 1 (escrowBump) = 85
+ */
+const LISTING_ACCOUNT_SIZE = 85;
 
 /**
  * Read a uint32 LE from a Uint8Array/Buffer at the given offset.
@@ -107,17 +117,41 @@ export function useActiveListings() {
     queryFn: async () => {
       if (!program) return [];
 
-      const allListings = await program.account.listing.all();
-      const activeListings = allListings.filter((l) => {
-        const acct = l.account as unknown as ListingAccount;
-        return acct.isActive;
+      // Use getProgramAccounts with dataSize filter instead of
+      // program.account.listing.all() — this lets us catch deserialization
+      // errors per-account rather than one bad account crashing the entire fetch.
+      const rawAccounts = await connection.getProgramAccounts(PROGRAM_ID, {
+        filters: [
+          { dataSize: LISTING_ACCOUNT_SIZE },
+        ],
       });
+
+      console.log(`[Marketplace] Found ${rawAccounts.length} listing accounts on-chain`);
 
       const enriched: EnrichedListing[] = [];
 
-      for (const listing of activeListings) {
+      for (const { pubkey, account: accInfo } of rawAccounts) {
         try {
-          const account = listing.account as unknown as ListingAccount;
+          // Verify discriminator before attempting full decode
+          const data = accInfo.data;
+          let isListing = true;
+          for (let i = 0; i < 8; i++) {
+            if (data[i] !== LISTING_DISCRIMINATOR[i]) {
+              isListing = false;
+              break;
+            }
+          }
+          if (!isListing) continue;
+
+          // Manually decode — skip accounts that fail deserialization
+          const decoded = program.coder.accounts.decode(
+            "listing",
+            data
+          );
+          const account = decoded as unknown as ListingAccount;
+
+          if (!account.isActive) continue;
+
           const assetAddress = account.mint;
           const marketplacePDA = getMarketplacePDA();
           const listingPDA = getListingPDA(marketplacePDA, assetAddress);
@@ -141,7 +175,7 @@ export function useActiveListings() {
               }
             }
           } catch (metaErr) {
-            console.warn("Failed to load metadata for listing", listing.publicKey.toBase58(), metaErr);
+            console.warn("[Marketplace] Failed to load metadata for listing", pubkey.toBase58(), metaErr);
           }
 
           let priceInSol = 0;
@@ -154,18 +188,19 @@ export function useActiveListings() {
           }
 
           enriched.push({
-            publicKey: listing.publicKey,
+            publicKey: pubkey,
             account,
             assetAddress,
             metadata,
             priceInSol,
             escrowPDA,
           });
-        } catch (listingErr) {
-          console.error("Failed to process listing", listing.publicKey.toBase58(), listingErr);
+        } catch (decodeErr) {
+          console.warn("[Marketplace] Skipping undeserializable listing account", pubkey.toBase58(), decodeErr);
         }
       }
 
+      console.log(`[Marketplace] Successfully enriched ${enriched.length} active listings`);
       return enriched;
     },
     enabled: !!program,

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import grid from "../assets/grid.svg";
 const Waitlist = () => {
   const [email, setEmail] = useState("");
@@ -23,12 +24,12 @@ const Waitlist = () => {
       if (response.ok) {
         setSubmitted(true);
       } else if (response.status === 409 && data.message) {
-        alert("Yo! 🤝, You're on the waitlist already");
+        toast("You're on the waitlist already!", { icon: "🤝" });
       } else {
-        alert("Something went wrong");
+        toast.error("Something went wrong");
       }
     } catch (error) {
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false); // stop loading
     }

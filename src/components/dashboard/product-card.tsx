@@ -1,35 +1,16 @@
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
 import type { EnrichedListing } from "../../types/marketplace";
-import { usePurchaseNft } from "../../hooks/useTransactions";
 
 interface ProductCardProps {
   listing: EnrichedListing;
+  onSelect: (listing: EnrichedListing) => void;
 }
 
-export const ProductCard = ({ listing }: ProductCardProps) => {
-  const [showConfirm, setShowConfirm] = useState(false);
-  const purchase = usePurchaseNft();
-
-  const handlePurchase = () => {
-    purchase.mutate(
-      {
-        assetAddress: listing.assetAddress,
-        seller: listing.account.seller,
-      },
-      {
-        onSuccess: () => {
-          setShowConfirm(false);
-        },
-        onError: () => {
-          setShowConfirm(false);
-        },
-      }
-    );
-  };
-
+export const ProductCard = ({ listing, onSelect }: ProductCardProps) => {
   return (
-    <div className="w-full py-4 bg-card flex flex-col justify-center items-center cursor-pointer h-[286px] relative overflow-hidden">
+    <div
+      onClick={() => onSelect(listing)}
+      className="w-full py-4 bg-card flex flex-col justify-center items-center cursor-pointer h-[286px] hover:bg-white/5 transition-colors"
+    >
       {listing.metadata.image ? (
         <img
           src={listing.metadata.image}
@@ -51,49 +32,6 @@ export const ProductCard = ({ listing }: ProductCardProps) => {
       <p className="text-sm text-center text-[#D1D1D1] pt-1">
         {listing.priceInSol} SOL
       </p>
-
-      {!showConfirm && (
-        <button
-          onClick={() => setShowConfirm(true)}
-          className="mt-3 px-6 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
-        >
-          Buy
-        </button>
-      )}
-
-      {showConfirm && (
-        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-3 p-4">
-          <p className="text-white text-sm text-center">
-            Purchase <span className="font-bold">{listing.metadata.name}</span> for{" "}
-            <span className="font-bold">{listing.priceInSol} SOL</span>?
-          </p>
-
-          {purchase.isPending ? (
-            <Loader2 className="w-6 h-6 animate-spin text-white" />
-          ) : (
-            <div className="flex gap-2">
-              <button
-                onClick={handlePurchase}
-                className="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wide transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-
-          {purchase.isError && (
-            <p className="text-red-400 text-xs text-center mt-1">
-              Transaction failed. Please try again.
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 };

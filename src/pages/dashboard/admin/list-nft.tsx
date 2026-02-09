@@ -5,6 +5,7 @@ import { Input } from "../../../components/ui/input";
 import { PrimaryButton } from "../../../components/PrimaryButton";
 import { useListNft } from "../../../hooks/useAdminTransactions";
 import { useAdminAssets } from "../../../hooks/useMarketplace";
+import toast from "react-hot-toast";
 
 export const ListNft = () => {
   const [selectedAsset, setSelectedAsset] = useState<string>("");
@@ -36,7 +37,7 @@ export const ListNft = () => {
           setSelectedAsset("");
           setPrice("");
           setTokenId("");
-          alert(`NFT listed!\nTx: ${tx}`);
+          toast.success("NFT listed successfully");
         },
       }
     );

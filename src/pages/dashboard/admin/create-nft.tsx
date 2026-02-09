@@ -13,6 +13,7 @@ import { useCreateNft } from "../../../hooks/useAdminTransactions";
 import { useTraitTypes } from "../../../hooks/useTraitTypes";
 import { useUploadToIrys } from "../../../hooks/useUploadToIrys";
 import { useSolanaProvider } from "../../../hooks/useSolanaProvider";
+import toast from "react-hot-toast";
 
 interface Trait {
   trait_type: string;
@@ -88,8 +89,8 @@ export const CreateNft = () => {
       });
 
       setMintStep("complete");
-      alert(
-        `NFT created!\nAsset: ${result.assetAddress.toBase58()}\nTx: ${result.tx}`
+      toast.success(
+        `NFT created! Asset: ${result.assetAddress.toBase58()}`
       );
       resetForm();
     } catch (err) {
