@@ -1,7 +1,7 @@
 import {
   Disclosure,
   DisclosureButton,
-  DisclosurePanel
+  DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import gildore_logo from "../assets/gildore_logo.png";
@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="fixed w-[90vw] max-w-[1024px] h-20 z-50 left-1/2 -translate-x-1/2 px-6 py-4 flex items-center justify-between mt-10 bg-transparent">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src={gildore_logo} alt="Gildore Logo" className=" w-10" />
+          <img src={gildore_logo} alt="Gildore Logo" className=" w-25 -mr-8" />
           <span className="text-white font-extrabold text-xl tracking-wider anton">
             GILDORE
           </span>
@@ -45,7 +45,7 @@ const Navbar = () => {
               <span
                 className={classNames(
                   "group-hover:text-white",
-                  activeNav === item ? "text-white" : ""
+                  activeNav === item ? "text-white" : "",
                 )}
               >
                 {item}
@@ -108,7 +108,7 @@ const Navbar = () => {
               <span
                 className={classNames(
                   "group-hover:text-white",
-                  activeNav === item ? "text-white" : ""
+                  activeNav === item ? "text-white" : "",
                 )}
               >
                 {item}
