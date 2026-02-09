@@ -100,12 +100,10 @@ export function useMarketplaceAccount() {
   return useQuery<MarketplaceAccount | null>({
     queryKey: ["marketplace"],
     queryFn: async () => {
-      if (!program) return null;
       const marketplacePDA = getMarketplacePDA();
       const account = await program.account.marketplace.fetch(marketplacePDA);
       return account as unknown as MarketplaceAccount;
     },
-    enabled: !!program,
   });
 }
 
@@ -115,8 +113,6 @@ export function useActiveListings() {
   return useQuery<EnrichedListing[]>({
     queryKey: ["listings", "active"],
     queryFn: async () => {
-      if (!program) return [];
-
       // Use getProgramAccounts with dataSize filter instead of
       // program.account.listing.all() — this lets us catch deserialization
       // errors per-account rather than one bad account crashing the entire fetch.
@@ -203,7 +199,6 @@ export function useActiveListings() {
       console.log(`[Marketplace] Successfully enriched ${enriched.length} active listings`);
       return enriched;
     },
-    enabled: !!program,
   });
 }
 
@@ -228,7 +223,7 @@ export function usePortfolioAssets() {
   return useQuery<PortfolioAsset[]>({
     queryKey: ["portfolio", walletAddress],
     queryFn: async () => {
-      if (!walletAddress || !program) return [];
+      if (!walletAddress) return [];
 
       const ownerPubkey = new PublicKey(walletAddress);
 
@@ -291,7 +286,7 @@ export function usePortfolioAssets() {
 
       return assets;
     },
-    enabled: !!walletAddress && !!program,
+    enabled: !!walletAddress,
   });
 }
 
@@ -301,7 +296,7 @@ export function useAdminAssets() {
   return useQuery<AdminAsset[]>({
     queryKey: ["admin-assets", walletAddress],
     queryFn: async () => {
-      if (!walletAddress || !program) return [];
+      if (!walletAddress) return [];
 
       const ownerPubkey = new PublicKey(walletAddress);
       const accounts = await connection.getProgramAccounts(
@@ -340,6 +335,6 @@ export function useAdminAssets() {
 
       return assets;
     },
-    enabled: !!walletAddress && !!program,
+    enabled: !!walletAddress,
   });
 }

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSolanaWallets } from "@privy-io/react-auth";
+import { usePrivy, useSolanaWallets } from "@privy-io/react-auth";
 import { Connection, PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
 import { SOLANA_RPC_URL } from "../constant";
@@ -13,18 +13,36 @@ interface AnchorWallet {
 }
 
 export function useSolanaProvider() {
+  const { user } = usePrivy();
   const { wallets } = useSolanaWallets();
 
-  // Prefer external wallets (Phantom, Solflare, etc.) over embedded wallets
+  // Wallet addresses linked to the current authenticated user
+  const linkedAddresses = useMemo(() => {
+    if (!user?.linkedAccounts) return new Set<string>();
+    const addresses = new Set<string>();
+    for (const account of user.linkedAccounts) {
+      if ("address" in account && typeof account.address === "string") {
+        addresses.add(account.address);
+      }
+    }
+    return addresses;
+  }, [user?.linkedAccounts]);
+
+  // Embedded wallets are always owned by the current user (created by Privy).
+  // External wallets must be verified against linkedAccounts to prevent
+  // stale wallets from a previous session being picked up via auto-connect.
   const solanaWallet = useMemo(() => {
     if (wallets.length === 0) return null;
 
-    // Find first external wallet (imported)
-    const externalWallet = wallets.find(w => w.walletClientType !== 'privy');
+    const ownedExternalWallets = wallets.filter(
+      (w) => w.walletClientType !== "privy" && linkedAddresses.has(w.address)
+    );
+    const embeddedWallets = wallets.filter(
+      (w) => w.walletClientType === "privy"
+    );
 
-    // Fall back to embedded wallet, or first wallet if none found
-    return externalWallet || wallets[0];
-  }, [wallets]);
+    return ownedExternalWallets[0] || embeddedWallets[0] || null;
+  }, [wallets, linkedAddresses]);
 
   const connection = useMemo(
     () => new Connection(SOLANA_RPC_URL, "confirmed"),
@@ -57,20 +75,30 @@ export function useSolanaProvider() {
     };
   }, [solanaWallet]);
 
+  // Always create a provider — uses real wallet when available, otherwise a
+  // read-only dummy so that the Anchor Program can decode/fetch accounts
+  // without requiring a connected wallet.
   const provider = useMemo(() => {
-    if (!anchorWallet) return null;
-    return new AnchorProvider(connection, anchorWallet, {
+    const wallet = anchorWallet ?? {
+      publicKey: PublicKey.default,
+      signTransaction: async <T extends Transaction | VersionedTransaction>(): Promise<T> => {
+        throw new Error("Wallet not connected");
+      },
+      signAllTransactions: async <T extends Transaction | VersionedTransaction>(): Promise<T[]> => {
+        throw new Error("Wallet not connected");
+      },
+    };
+    return new AnchorProvider(connection, wallet, {
       commitment: "confirmed",
     });
   }, [connection, anchorWallet]);
 
-  const program = useMemo(() => {
-    if (!provider) return null;
-    return new Program<AnchorMarketplace>(
-      idl as AnchorMarketplace,
-      provider
-    );
-  }, [provider]);
+  // Program is always available for read operations (decoding, fetching).
+  // Signing transactions will fail unless a real wallet is connected.
+  const program = useMemo(
+    () => new Program<AnchorMarketplace>(idl as AnchorMarketplace, provider),
+    [provider]
+  );
 
   return {
     connection,
@@ -78,6 +106,6 @@ export function useSolanaProvider() {
     program,
     walletAddress: solanaWallet?.address ?? null,
     publicKey: anchorWallet?.publicKey ?? null,
-    isWalletReady: !!anchorWallet && !!program,
+    isWalletReady: !!anchorWallet,
   };
 }

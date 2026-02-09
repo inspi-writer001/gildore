@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useConnectWallet, usePrivy } from "@privy-io/react-auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, User } from "lucide-react";
 import { useSolanaProvider } from "../../hooks/useSolanaProvider";
 import gildore_logo from "../../assets/gildore_logo.svg";
@@ -8,6 +9,7 @@ export const DashboardHeader = () => {
   const { connectWallet } = useConnectWallet();
   const { logout, user } = usePrivy();
   const { walletAddress } = useSolanaProvider();
+  const queryClient = useQueryClient();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +82,7 @@ export const DashboardHeader = () => {
               <button
                 onClick={() => {
                   setMenuOpen(false);
+                  queryClient.clear();
                   logout();
                 }}
                 className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 transition-colors"

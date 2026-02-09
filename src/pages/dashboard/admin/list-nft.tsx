@@ -33,7 +33,7 @@ export const ListNft = () => {
         tokenId: tokenIdNum,
       },
       {
-        onSuccess: (tx) => {
+        onSuccess: () => {
           setSelectedAsset("");
           setPrice("");
           setTokenId("");

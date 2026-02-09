@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSolanaWallets } from "@privy-io/react-auth";
+import { usePrivy, useSolanaWallets } from "@privy-io/react-auth";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import {
@@ -16,13 +16,33 @@ import {
 import { SOLANA_RPC_URL } from "../constant";
 
 export function useUmi(): Umi | null {
+  const { user } = usePrivy();
   const { wallets } = useSolanaWallets();
+
+  // Wallet addresses linked to the current authenticated user
+  const linkedAddresses = useMemo(() => {
+    if (!user?.linkedAccounts) return new Set<string>();
+    const addresses = new Set<string>();
+    for (const account of user.linkedAccounts) {
+      if ("address" in account && typeof account.address === "string") {
+        addresses.add(account.address);
+      }
+    }
+    return addresses;
+  }, [user?.linkedAccounts]);
 
   const solanaWallet = useMemo(() => {
     if (wallets.length === 0) return null;
-    const externalWallet = wallets.find((w) => w.walletClientType !== "privy");
-    return externalWallet || wallets[0];
-  }, [wallets]);
+
+    const ownedExternalWallets = wallets.filter(
+      (w) => w.walletClientType !== "privy" && linkedAddresses.has(w.address)
+    );
+    const embeddedWallets = wallets.filter(
+      (w) => w.walletClientType === "privy"
+    );
+
+    return ownedExternalWallets[0] || embeddedWallets[0] || null;
+  }, [wallets, linkedAddresses]);
 
   const umi = useMemo(() => {
     if (!solanaWallet?.address) return null;

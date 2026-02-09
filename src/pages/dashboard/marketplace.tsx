@@ -6,7 +6,7 @@ import { useActiveListings } from "../../hooks/useMarketplace"
 import type { EnrichedListing } from "../../types/marketplace"
 
 export const Marketplace = () => {
-  const { data: listings, isLoading, error } = useActiveListings();
+  const { data: listings, error } = useActiveListings();
   const [selectedListing, setSelectedListing] = useState<EnrichedListing | null>(null);
 
   return (
@@ -19,7 +19,7 @@ export const Marketplace = () => {
         </div>
 
         {/* market place list */}
-        {isLoading && (
+        {!listings && !error && (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-white/50" />
           </div>
@@ -31,13 +31,13 @@ export const Marketplace = () => {
           </div>
         )}
 
-        {!isLoading && !error && listings?.length === 0 && (
+        {listings?.length === 0 && (
           <div className="flex items-center justify-center py-20">
             <p className="text-white/50 text-sm">No listings available at the moment.</p>
           </div>
         )}
 
-        {!isLoading && !error && listings && listings.length > 0 && (
+        {listings && listings.length > 0 && (
           <div className="flex gap-4">
             {/* Product grid — shrinks when panel is open */}
             <div
