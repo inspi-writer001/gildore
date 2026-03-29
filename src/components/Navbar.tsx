@@ -6,6 +6,7 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import gildore_logo from "../assets/gildore_logo.png";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 const navItems = ["About Us", "Evolution", "How It Works", "FAQ"];
 function classNames(...classes: string[]) {
@@ -14,6 +15,7 @@ function classNames(...classes: string[]) {
 
 const Navbar = () => {
   const [activeNav, setActiveNav] = useState(navItems[0]);
+  const navigate = useNavigate();
   return (
     <Disclosure as="nav">
       <div className="fixed w-[90vw] max-w-[1024px] h-20 z-50 left-1/2 -translate-x-1/2 px-6 py-4 flex items-center justify-between mt-10 bg-transparent">
@@ -61,20 +63,12 @@ const Navbar = () => {
         <div className="hidden md:block">
           <div
             className="__cta_button z-20 relative anton text-sm py-1 rounded-sm w-40 text-[#D48900] uppercase font-bold border-b-2 border-[#FAC35D]"
-            onClick={(e) => {
-              e.preventDefault();
-              const targetId = "#waitlist";
-              const target = document.querySelector(targetId);
-              if (target) {
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-                window.history.pushState(null, "", targetId);
-              }
-            }}
+            onClick={() => navigate("/dashboard")}
           >
-            Join Waiting List
+            Get Started
           </div>
           <div className="anton relative z-10 text-2xl -mt-7 rounded-sm w-40 text-[#C78406] bg-[#C78406] uppercase">
-            Join Waiting List
+            Get Started
           </div>
         </div>
 
@@ -121,20 +115,12 @@ const Navbar = () => {
           <div className="pt-4">
             <div
               className="__cta_button z-20 relative anton text-sm py-1 rounded-sm w-full text-center text-[#D48900] uppercase font-bold border-b-2 border-[#FAC35D]"
-              onClick={(e) => {
-                e.preventDefault();
-                const targetId = "#waitlist";
-                const target = document.querySelector(targetId);
-                if (target) {
-                  target.scrollIntoView({ behavior: "smooth", block: "start" });
-                  window.history.pushState(null, "", targetId);
-                }
-              }}
+              onClick={() => navigate("/dashboard")}
             >
-              Join Waiting List
+              Get Started
             </div>
             <div className="anton relative z-10 text-2xl -mt-7 rounded-sm w-full text-center text-[#C78406] bg-[#C78406] uppercase">
-              Join Waiting List
+              Get Started
             </div>
           </div>
         </div>

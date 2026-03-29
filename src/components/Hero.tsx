@@ -4,8 +4,12 @@ import gold from "../assets/landing/gildore_gold.png";
 import silver from "../assets/landing/gildore_silver.png";
 import grid from "../assets/grid.svg";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { usePrivy } from "@privy-io/react-auth";
+import { useNavigate } from "react-router";
 
 const Hero = () => {
+  const { authenticated } = usePrivy();
+  const navigate = useNavigate();
   return (
     <div
       id="about-us"
@@ -36,21 +40,13 @@ const Hero = () => {
         </h2>
 
         <div
-          className="__cta_button z-20 relative anton text-2xl py-2 rounded-sm w-60 text-[#D48900] uppercase font-bold mt-8 border-b-2 border-[#FAC35D]"
-          onClick={(e) => {
-            e.preventDefault();
-            const targetId = "#waitlist";
-            const target = document.querySelector(targetId);
-            if (target) {
-              target.scrollIntoView({ behavior: "smooth", block: "start" });
-              window.history.pushState(null, "", targetId);
-            }
-          }}
+          className="__cta_button z-20 relative anton text-2xl py-2 rounded-sm w-60 text-[#D48900] uppercase font-bold mt-8 border-b-2 border-[#FAC35D] cursor-pointer"
+          onClick={() => navigate(authenticated ? "/dashboard" : "/auth")}
         >
-          Join Waiting List
+          Start Saving
         </div>
         <div className="anton relative z-10 text-2xl py-2 -mt-8 rounded-sm w-60 text-[#C78406] bg-[#C78406] uppercase">
-          Join Waiting List
+          Start Saving
         </div>
 
         <button className="__slanted_button absolute w-fit text-nowrap flex-nowrap text-xs md:text-base md:w-56 bottom-0 z-20">

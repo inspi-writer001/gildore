@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardBottomMenu } from "./DashboardBottomMenu";
+import { TestEnvironmentBanner } from "./TestEnvironmentBanner";
 
 export const DashboardLayout = () => {
     const { ready, authenticated } = usePrivy();
@@ -25,6 +26,8 @@ export const DashboardLayout = () => {
         <div className="inset-0 absolute -z-10">
           <img src={grid} className="object-cover h-full w-full" alt="grid"/>
         </div>
+
+      <TestEnvironmentBanner />
 
       {/* content */}
       <div className="flex flex-1 gap-4 h-full">
