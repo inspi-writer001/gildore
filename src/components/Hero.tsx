@@ -31,12 +31,12 @@ const Hero = () => {
         <img src={grid} className="absolute z-20 w-full" />
 
         <h1 className="__gildore_hero anton font-bold text-5xl md:text-7xl uppercase relative z-20">
-          Nature's Money. Reinvented.
+          Real Money for a Paper World.
         </h1>
 
         <h2 className="__gildore_info inter md:w-2xl md:p-0 p-4 relative z-20">
-          Save in real gold and silver, backed by banks. Mint tokens, grow
-          wealth, and own Earth's money - all on Solana
+          Holding fiat is a trap, you know this, Gildore saves you from
+          inflation.
         </h2>
 
         <div
